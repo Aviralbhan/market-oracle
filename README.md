@@ -21,10 +21,6 @@ Most portfolio simulation demos are single-player and trust the client for game 
 - **Client**: React, TypeScript, Vite, React Router, Recharts, `qrcode.react`, `socket.io-client`
 - **Data**: Each scenario's snapshots (`server/src/scenarios/data.ts`) are hand-authored around real historical events, with illustrative equity/debt returns shaped after publicly documented drawdown/recovery magnitudes for each period — not scraped or licensed market data, so the dataset is original.
 
-## Screenshots
-
-_Add screenshots or a short GIF here: Lobby with QR code, a live Game screen showing the narrative card + allocation slider + index chart, and the Results leaderboard._
-
 ## Project Structure
 
 ```text
