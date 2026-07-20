@@ -1,12 +1,11 @@
-export interface Asset {
-  symbol: string;
-  name: string;
-}
-
-export interface ScenarioTick {
-  day: number;
+export interface ScenarioSnapshot {
+  index: number;
   label: string;
-  prices: Record<string, number>;
+  narrative: string;
+  equityReturnPct: number;
+  debtReturnPct: number;
+  equityIndex: number;
+  debtIndex: number;
 }
 
 export interface ScenarioSummary {
@@ -21,35 +20,32 @@ export type RoomStatus = "lobby" | "running" | "ended";
 export interface PublicPlayer {
   id: string;
   name: string;
-  cash: number;
-  holdings: Record<string, number>;
+  portfolioValue: number;
+  equityPercent: number;
   connected: boolean;
   isHost: boolean;
-  portfolioValue: number;
 }
 
 export interface RoomSnapshot {
   code: string;
   scenarioId: string;
   scenarioName: string;
-  assets: Asset[];
   status: RoomStatus;
-  currentTickIndex: number;
-  tickEndsAt: number | null;
-  tickDurationMs: number;
-  tick: ScenarioTick | null;
-  priceHistory: ScenarioTick[];
+  currentSnapshotIndex: number;
+  totalSnapshots: number;
+  roundEndsAt: number | null;
+  roundDurationMs: number;
+  isDecisionRound: boolean;
+  snapshot: ScenarioSnapshot | null;
+  snapshotHistory: ScenarioSnapshot[];
   players: PublicPlayer[];
-  totalTicks: number;
 }
 
-export interface TradeRequest {
-  symbol: string;
-  action: "buy" | "sell";
-  quantity: number;
+export interface SetAllocationRequest {
+  equityPercent: number;
 }
 
-export interface TradeResult {
+export interface SetAllocationResult {
   ok: boolean;
   error?: string;
 }

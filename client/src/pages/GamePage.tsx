@@ -2,14 +2,15 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRoom } from "../hooks/useRoom";
 import { Timer } from "../components/Timer";
-import { PriceChart } from "../components/PriceChart";
-import { TradePanel } from "../components/TradePanel";
-import { PortfolioPanel } from "../components/PortfolioPanel";
+import { IndexChart } from "../components/IndexChart";
+import { NarrativeCard } from "../components/NarrativeCard";
+import { AllocationSlider } from "../components/AllocationSlider";
+import { PortfolioSummary } from "../components/PortfolioSummary";
 import { Leaderboard } from "../components/Leaderboard";
 
 export function GamePage() {
   const navigate = useNavigate();
-  const { snapshot, selfPlayerId, trade, lastTradeError, clearTradeError, connected } = useRoom();
+  const { snapshot, selfPlayerId, setAllocation, connected } = useRoom();
 
   useEffect(() => {
     if (!connected) return;
@@ -21,52 +22,42 @@ export function GamePage() {
     if (snapshot.status === "ended") navigate(`/results/${snapshot.code}`, { replace: true });
   }, [snapshot, connected, navigate]);
 
-  if (!snapshot || !snapshot.tick) {
+  if (!snapshot || !snapshot.snapshot) {
     return (
       <div className="page">
-        <p>Loading market data…</p>
+        <p>Loading scenario…</p>
       </div>
     );
   }
 
   const self = snapshot.players.find((p) => p.id === selfPlayerId);
-  const prices = snapshot.tick.prices;
 
   return (
     <div className="page game-page">
       <div className="game-header">
         <h1>{snapshot.scenarioName}</h1>
         <span className="tick-label">
-          {snapshot.tick.label} · Round {snapshot.currentTickIndex + 1}/{snapshot.totalTicks}
+          Snapshot {snapshot.currentSnapshotIndex + 1}/{snapshot.totalSnapshots}
         </span>
-        <Timer tickEndsAt={snapshot.tickEndsAt} tickDurationMs={snapshot.tickDurationMs} />
+        {snapshot.isDecisionRound && (
+          <Timer roundEndsAt={snapshot.roundEndsAt} roundDurationMs={snapshot.roundDurationMs} />
+        )}
       </div>
 
       <div className="game-grid">
         <div className="game-main">
-          <PriceChart assets={snapshot.assets} history={snapshot.priceHistory} />
+          <NarrativeCard snapshot={snapshot.snapshot} />
+          <IndexChart history={snapshot.snapshotHistory} />
           {self && (
-            <TradePanel
-              assets={snapshot.assets}
-              prices={prices}
-              cash={self.cash}
-              holdings={self.holdings}
-              onTrade={trade}
-              error={lastTradeError}
-              onClearError={clearTradeError}
+            <AllocationSlider
+              equityPercent={self.equityPercent}
+              disabled={!snapshot.isDecisionRound}
+              onChange={setAllocation}
             />
           )}
         </div>
         <div className="game-side">
-          {self && (
-            <PortfolioPanel
-              cash={self.cash}
-              holdings={self.holdings}
-              prices={prices}
-              assets={snapshot.assets}
-              portfolioValue={self.portfolioValue}
-            />
-          )}
+          {self && <PortfolioSummary portfolioValue={self.portfolioValue} />}
           <Leaderboard players={snapshot.players} selfPlayerId={selfPlayerId} />
         </div>
       </div>

@@ -31,7 +31,7 @@ export function HomePage() {
   return (
     <div className="page home-page">
       <h1>Market Oracle</h1>
-      <p className="tagline">A real-time multiplayer investment simulation. Trade your way through historic market crashes against friends.</p>
+      <p className="tagline">A real-time multiplayer portfolio simulation. Split your money between Equity and Debt at each turning point of a historic market scenario and see who comes out ahead.</p>
       {!connected && <p className="status-warning">Connecting to server…</p>}
       {errorMessage && (
         <p className="error-banner" onClick={clearError}>

@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { socket, saveSession, loadSession, clearSession } from "../lib/socket";
-import type { RoomSnapshot, ScenarioSummary, TradeRequest, TradeResult } from "../types";
+import type { RoomSnapshot, ScenarioSummary, SetAllocationResult } from "../types";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:4000";
 
@@ -9,15 +9,13 @@ interface RoomContextValue {
   snapshot: RoomSnapshot | null;
   selfPlayerId: string | null;
   errorMessage: string | null;
-  lastTradeError: string | null;
   scenarios: ScenarioSummary[];
   createRoom: (playerName: string, scenarioId: string) => void;
   joinRoom: (roomCode: string, playerName: string) => void;
   startGame: () => void;
-  trade: (req: TradeRequest) => void;
+  setAllocation: (equityPercent: number) => void;
   leaveRoom: () => void;
   clearError: () => void;
-  clearTradeError: () => void;
 }
 
 const RoomContext = createContext<RoomContextValue | null>(null);
@@ -27,7 +25,6 @@ export function RoomProvider({ children }: { children: ReactNode }) {
   const [snapshot, setSnapshot] = useState<RoomSnapshot | null>(null);
   const [selfPlayerId, setSelfPlayerId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [lastTradeError, setLastTradeError] = useState<string | null>(null);
   const [scenarios, setScenarios] = useState<ScenarioSummary[]>([]);
 
   useEffect(() => {
@@ -71,8 +68,8 @@ export function RoomProvider({ children }: { children: ReactNode }) {
     function onErrorMessage(message: string) {
       setErrorMessage(message);
     }
-    function onTradeResult(result: TradeResult) {
-      setLastTradeError(result.ok ? null : result.error ?? "Trade failed.");
+    function onAllocationResult(result: SetAllocationResult) {
+      if (!result.ok) setErrorMessage(result.error ?? "Could not update allocation.");
     }
 
     socket.on("connect", onConnect);
@@ -83,7 +80,7 @@ export function RoomProvider({ children }: { children: ReactNode }) {
     socket.on("rejoin-failed", onRejoinFailed);
     socket.on("room-update", onRoomUpdate);
     socket.on("error-message", onErrorMessage);
-    socket.on("trade-result", onTradeResult);
+    socket.on("allocation-result", onAllocationResult);
 
     if (socket.connected) onConnect();
 
@@ -96,7 +93,7 @@ export function RoomProvider({ children }: { children: ReactNode }) {
       socket.off("rejoin-failed", onRejoinFailed);
       socket.off("room-update", onRoomUpdate);
       socket.off("error-message", onErrorMessage);
-      socket.off("trade-result", onTradeResult);
+      socket.off("allocation-result", onAllocationResult);
     };
   }, []);
 
@@ -112,8 +109,8 @@ export function RoomProvider({ children }: { children: ReactNode }) {
     socket.emit("start-game");
   }, []);
 
-  const trade = useCallback((req: TradeRequest) => {
-    socket.emit("trade", req);
+  const setAllocation = useCallback((equityPercent: number) => {
+    socket.emit("set-allocation", { equityPercent });
   }, []);
 
   const leaveRoom = useCallback(() => {
@@ -124,7 +121,6 @@ export function RoomProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const clearError = useCallback(() => setErrorMessage(null), []);
-  const clearTradeError = useCallback(() => setLastTradeError(null), []);
 
   const value = useMemo(
     () => ({
@@ -132,17 +128,15 @@ export function RoomProvider({ children }: { children: ReactNode }) {
       snapshot,
       selfPlayerId,
       errorMessage,
-      lastTradeError,
       scenarios,
       createRoom,
       joinRoom,
       startGame,
-      trade,
+      setAllocation,
       leaveRoom,
       clearError,
-      clearTradeError,
     }),
-    [connected, snapshot, selfPlayerId, errorMessage, lastTradeError, scenarios, createRoom, joinRoom, startGame, trade, leaveRoom, clearError, clearTradeError]
+    [connected, snapshot, selfPlayerId, errorMessage, scenarios, createRoom, joinRoom, startGame, setAllocation, leaveRoom, clearError]
   );
 
   return <RoomContext.Provider value={value}>{children}</RoomContext.Provider>;

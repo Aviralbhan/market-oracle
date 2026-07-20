@@ -261,44 +261,62 @@ button:disabled {
   padding: 16px;
 }
 
-.trade-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
+.narrative-card {
+  border-left: 3px solid var(--accent);
 }
 
-.trade-row select {
-  flex: 2;
+.narrative-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 6px;
 }
 
-.trade-row input {
-  flex: 1;
+.narrative-text {
+  margin: 0 0 12px;
+  line-height: 1.5;
 }
 
-.trade-meta {
+.narrative-returns {
   display: flex;
   gap: 16px;
   font-size: 13px;
-  color: var(--text-dim);
-  margin-bottom: 12px;
+  font-weight: 600;
 }
 
-.trade-actions {
-  display: flex;
-  gap: 10px;
+.positive {
+  color: var(--green);
 }
 
-.trade-actions .buy {
-  background: var(--green);
-}
-
-.trade-actions .sell {
-  background: var(--red);
-}
-
-.trade-error {
+.negative {
   color: var(--red);
-  font-size: 13px;
+}
+
+.allocation-readout {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.equity-value {
+  color: var(--accent);
+}
+
+.debt-value {
+  color: var(--green);
+}
+
+.allocation-slider {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.allocation-hint {
+  color: var(--text-dim);
+  font-size: 12px;
   margin-top: 10px;
 }
 
@@ -322,26 +340,6 @@ button:disabled {
 
 .portfolio-summary .value.strong {
   color: var(--green);
-}
-
-.holdings-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 13px;
-}
-
-.holdings-list li {
-  display: flex;
-  justify-content: space-between;
-  color: var(--text-dim);
-}
-
-.holdings-list .empty {
-  font-style: italic;
 }
 
 .leaderboard ol {

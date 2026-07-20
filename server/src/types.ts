@@ -1,12 +1,13 @@
-export interface Asset {
-  symbol: string;
-  name: string;
-}
-
-export interface ScenarioTick {
-  day: number;
+export interface ScenarioSnapshot {
+  index: number;
   label: string;
-  prices: Record<string, number>;
+  narrative: string;
+  /** % return applied entering this snapshot from the previous one. 0 for index 0 (baseline). */
+  equityReturnPct: number;
+  debtReturnPct: number;
+  /** Cumulative index values for charting, starting at 100 at index 0. */
+  equityIndex: number;
+  debtIndex: number;
 }
 
 export interface Scenario {
@@ -14,21 +15,16 @@ export interface Scenario {
   name: string;
   description: string;
   peakToTroughPct: number;
-  assets: Asset[];
-  ticks: ScenarioTick[];
-}
-
-export interface Holding {
-  symbol: string;
-  quantity: number;
+  snapshots: ScenarioSnapshot[];
 }
 
 export interface Player {
   id: string;
   socketId: string | null;
   name: string;
-  cash: number;
-  holdings: Record<string, number>;
+  portfolioValue: number;
+  /** Current allocation choice, 0-100. Rest is allocated to debt. */
+  equityPercent: number;
   connected: boolean;
   disconnectedAt: number | null;
   isHost: boolean;
@@ -41,41 +37,38 @@ export interface Room {
   scenarioId: string;
   status: RoomStatus;
   players: Map<string, Player>;
-  currentTickIndex: number;
-  tickEndsAt: number | null;
-  tickDurationMs: number;
+  currentSnapshotIndex: number;
+  roundEndsAt: number | null;
+  roundDurationMs: number;
   startingCash: number;
   createdAt: number;
-  tickTimer: NodeJS.Timeout | null;
+  roundTimer: NodeJS.Timeout | null;
 }
 
 export interface PublicPlayer {
   id: string;
   name: string;
-  cash: number;
-  holdings: Record<string, number>;
+  portfolioValue: number;
+  equityPercent: number;
   connected: boolean;
   isHost: boolean;
-  portfolioValue: number;
 }
 
 export interface RoomSnapshot {
   code: string;
   scenarioId: string;
   scenarioName: string;
-  assets: Asset[];
   status: RoomStatus;
-  currentTickIndex: number;
-  tickEndsAt: number | null;
-  tickDurationMs: number;
-  tick: ScenarioTick | null;
-  priceHistory: ScenarioTick[];
+  currentSnapshotIndex: number;
+  totalSnapshots: number;
+  roundEndsAt: number | null;
+  roundDurationMs: number;
+  isDecisionRound: boolean;
+  snapshot: ScenarioSnapshot | null;
+  snapshotHistory: ScenarioSnapshot[];
   players: PublicPlayer[];
-  totalTicks: number;
 }
 
-export interface TradeRequest {
-  symbol: string;
-  action: "buy" | "sell";
-  quantity: number;
+export interface SetAllocationRequest {
+  equityPercent: number;
 }

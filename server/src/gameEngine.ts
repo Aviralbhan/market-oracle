@@ -1,49 +1,38 @@
 import type { Server } from "socket.io";
-import type { Player, PublicPlayer, Room, RoomSnapshot, Scenario, TradeRequest } from "./types";
+import type { Player, PublicPlayer, Room, RoomSnapshot, Scenario } from "./types";
 
-function currentPrices(room: Room, scenario: Scenario): Record<string, number> | null {
-  const tick = scenario.ticks[room.currentTickIndex];
-  return tick ? tick.prices : null;
-}
-
-export function portfolioValue(player: Player, prices: Record<string, number> | null): number {
-  let value = player.cash;
-  for (const [symbol, quantity] of Object.entries(player.holdings)) {
-    const price = prices?.[symbol] ?? 0;
-    value += price * quantity;
-  }
-  return Math.round(value * 100) / 100;
+function toPublicPlayer(player: Player): PublicPlayer {
+  return {
+    id: player.id,
+    name: player.name,
+    portfolioValue: player.portfolioValue,
+    equityPercent: player.equityPercent,
+    connected: player.connected,
+    isHost: player.isHost,
+  };
 }
 
 export function buildSnapshot(room: Room, scenario: Scenario): RoomSnapshot {
-  const tick = scenario.ticks[room.currentTickIndex] ?? null;
-  const prices = tick ? tick.prices : null;
+  const snapshot = scenario.snapshots[room.currentSnapshotIndex] ?? null;
+  const isDecisionRound = room.status === "running" && room.currentSnapshotIndex < scenario.snapshots.length - 1;
 
   const players: PublicPlayer[] = Array.from(room.players.values())
-    .map((p) => ({
-      id: p.id,
-      name: p.name,
-      cash: p.cash,
-      holdings: p.holdings,
-      connected: p.connected,
-      isHost: p.isHost,
-      portfolioValue: portfolioValue(p, prices),
-    }))
+    .map(toPublicPlayer)
     .sort((a, b) => b.portfolioValue - a.portfolioValue);
 
   return {
     code: room.code,
     scenarioId: room.scenarioId,
     scenarioName: scenario.name,
-    assets: scenario.assets,
     status: room.status,
-    currentTickIndex: room.currentTickIndex,
-    tickEndsAt: room.tickEndsAt,
-    tickDurationMs: room.tickDurationMs,
-    tick,
-    priceHistory: scenario.ticks.slice(0, room.currentTickIndex + 1),
+    currentSnapshotIndex: room.currentSnapshotIndex,
+    totalSnapshots: scenario.snapshots.length,
+    roundEndsAt: room.roundEndsAt,
+    roundDurationMs: room.roundDurationMs,
+    isDecisionRound,
+    snapshot,
+    snapshotHistory: scenario.snapshots.slice(0, room.currentSnapshotIndex + 1),
     players,
-    totalTicks: scenario.ticks.length,
   };
 }
 
@@ -51,91 +40,72 @@ function broadcastSnapshot(io: Server, room: Room, scenario: Scenario): void {
   io.to(room.code).emit("room-update", buildSnapshot(room, scenario));
 }
 
+function applyReturn(room: Room, snapshot: Scenario["snapshots"][number]): void {
+  for (const player of room.players.values()) {
+    const equityFrac = player.equityPercent / 100;
+    const debtFrac = 1 - equityFrac;
+    const growth = equityFrac * (snapshot.equityReturnPct / 100) + debtFrac * (snapshot.debtReturnPct / 100);
+    player.portfolioValue = Math.round(player.portfolioValue * (1 + growth) * 100) / 100;
+  }
+}
+
 export function startGame(io: Server, room: Room, scenario: Scenario): void {
   if (room.status !== "lobby") return;
   room.status = "running";
-  room.currentTickIndex = 0;
-  scheduleTick(io, room, scenario);
+  room.currentSnapshotIndex = 0;
+  advanceToSnapshot(io, room, scenario, 0);
 }
 
-function scheduleTick(io: Server, room: Room, scenario: Scenario): void {
-  room.tickEndsAt = Date.now() + room.tickDurationMs;
-  broadcastSnapshot(io, room, scenario);
+function advanceToSnapshot(io: Server, room: Room, scenario: Scenario, index: number): void {
+  room.currentSnapshotIndex = index;
+  const snapshot = scenario.snapshots[index];
 
-  room.tickTimer = setTimeout(() => {
-    advanceTick(io, room, scenario);
-  }, room.tickDurationMs);
-}
+  if (index > 0) {
+    applyReturn(room, snapshot);
+  }
 
-function advanceTick(io: Server, room: Room, scenario: Scenario): void {
-  room.currentTickIndex += 1;
-  if (room.currentTickIndex >= scenario.ticks.length) {
+  const isLastSnapshot = index >= scenario.snapshots.length - 1;
+  if (isLastSnapshot) {
     endGame(io, room, scenario);
     return;
   }
-  scheduleTick(io, room, scenario);
+
+  room.roundEndsAt = Date.now() + room.roundDurationMs;
+  broadcastSnapshot(io, room, scenario);
+
+  room.roundTimer = setTimeout(() => {
+    advanceToSnapshot(io, room, scenario, room.currentSnapshotIndex + 1);
+  }, room.roundDurationMs);
 }
 
 function endGame(io: Server, room: Room, scenario: Scenario): void {
   room.status = "ended";
-  room.tickEndsAt = null;
-  room.currentTickIndex = scenario.ticks.length - 1;
-  if (room.tickTimer) {
-    clearTimeout(room.tickTimer);
-    room.tickTimer = null;
+  room.roundEndsAt = null;
+  if (room.roundTimer) {
+    clearTimeout(room.roundTimer);
+    room.roundTimer = null;
   }
   broadcastSnapshot(io, room, scenario);
 }
 
-export interface TradeResult {
+export interface SetAllocationResult {
   ok: boolean;
   error?: string;
 }
 
-export function executeTrade(room: Room, scenario: Scenario, playerId: string, req: TradeRequest): TradeResult {
+export function setAllocation(room: Room, playerId: string, equityPercent: number): SetAllocationResult {
   if (room.status !== "running") {
-    return { ok: false, error: "Market is not open right now." };
+    return { ok: false, error: "This room isn't in an active round." };
   }
-
   const player = room.players.get(playerId);
   if (!player) return { ok: false, error: "Player not found in room." };
 
-  const prices = currentPrices(room, scenario);
-  const price = prices?.[req.symbol];
-  if (!price) return { ok: false, error: "Unknown asset." };
-
-  const quantity = Math.round(Math.max(0, req.quantity) * 10000) / 10000;
-  if (!Number.isFinite(quantity) || quantity <= 0) {
-    return { ok: false, error: "Quantity must be greater than zero." };
+  if (!Number.isFinite(equityPercent)) {
+    return { ok: false, error: "Invalid allocation." };
   }
 
-  if (req.action === "buy") {
-    const cost = Math.round(price * quantity * 100) / 100;
-    if (cost > player.cash + 0.001) {
-      return { ok: false, error: "Not enough cash for this trade." };
-    }
-    player.cash = Math.round((player.cash - cost) * 100) / 100;
-    player.holdings[req.symbol] = Math.round(((player.holdings[req.symbol] ?? 0) + quantity) * 10000) / 10000;
-    return { ok: true };
-  }
-
-  if (req.action === "sell") {
-    const owned = player.holdings[req.symbol] ?? 0;
-    if (quantity > owned + 0.0001) {
-      return { ok: false, error: "Not enough shares to sell." };
-    }
-    const proceeds = Math.round(price * quantity * 100) / 100;
-    player.cash = Math.round((player.cash + proceeds) * 100) / 100;
-    const remaining = Math.round((owned - quantity) * 10000) / 10000;
-    if (remaining <= 0.0001) {
-      delete player.holdings[req.symbol];
-    } else {
-      player.holdings[req.symbol] = remaining;
-    }
-    return { ok: true };
-  }
-
-  return { ok: false, error: "Unknown trade action." };
+  player.equityPercent = Math.round(Math.max(0, Math.min(100, equityPercent)));
+  return { ok: true };
 }
 
 export { broadcastSnapshot };

@@ -1,13 +1,7 @@
 import type { Scenario } from "../types";
-import financialCrisis2008 from "./2008-financial-crisis.json";
-import dotcomBubble from "./dotcom-bubble.json";
-import covidCrash from "./covid-crash.json";
+import { scenarios } from "./data";
 
-export const scenarios: Scenario[] = [
-  financialCrisis2008 as Scenario,
-  dotcomBubble as Scenario,
-  covidCrash as Scenario,
-];
+export { scenarios };
 
 export function getScenario(id: string): Scenario | undefined {
   return scenarios.find((s) => s.id === id);

@@ -3,7 +3,7 @@ import type { Player, Room } from "./types";
 
 const ROOM_CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O/1/I
 const GRACE_MS = 2 * 60 * 1000;
-const DEFAULT_TICK_MS = 4000;
+const DEFAULT_ROUND_MS = 20000;
 
 export class RoomManager {
   private rooms = new Map<string, Room>();
@@ -19,19 +19,19 @@ export class RoomManager {
     return code;
   }
 
-  createRoom(scenarioId: string, startingCash: number, tickDurationMs = DEFAULT_TICK_MS): Room {
+  createRoom(scenarioId: string, startingCash: number, roundDurationMs = DEFAULT_ROUND_MS): Room {
     const code = this.generateRoomCode();
     const room: Room = {
       code,
       scenarioId,
       status: "lobby",
       players: new Map(),
-      currentTickIndex: 0,
-      tickEndsAt: null,
-      tickDurationMs,
+      currentSnapshotIndex: 0,
+      roundEndsAt: null,
+      roundDurationMs,
       startingCash,
       createdAt: Date.now(),
-      tickTimer: null,
+      roundTimer: null,
     };
     this.rooms.set(code, room);
     return room;
@@ -54,8 +54,8 @@ export class RoomManager {
       id: randomUUID(),
       socketId,
       name: name.slice(0, 24).trim() || "Trader",
-      cash: room.startingCash,
-      holdings: {},
+      portfolioValue: room.startingCash,
+      equityPercent: 50,
       connected: true,
       disconnectedAt: null,
       isHost,
@@ -127,7 +127,7 @@ export class RoomManager {
       const noOneConnected = Array.from(room.players.values()).every((p) => !p.connected);
       const isStale = now - room.createdAt > maxAgeMs;
       if ((room.status === "ended" && noOneConnected) || (isStale && noOneConnected)) {
-        if (room.tickTimer) clearTimeout(room.tickTimer);
+        if (room.roundTimer) clearTimeout(room.roundTimer);
         this.rooms.delete(room.code);
       }
     }

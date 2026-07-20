@@ -1,8 +1,8 @@
 import type { Server, Socket } from "socket.io";
 import { RoomManager } from "./rooms";
 import { getScenario } from "./scenarios";
-import { buildSnapshot, executeTrade, startGame } from "./gameEngine";
-import type { TradeRequest } from "./types";
+import { buildSnapshot, setAllocation, startGame } from "./gameEngine";
+import type { SetAllocationRequest } from "./types";
 
 interface SocketData {
   roomCode?: string;
@@ -109,7 +109,7 @@ export function registerSocketHandlers(io: Server, roomManager: RoomManager): vo
       startGame(io, room, scenario);
     });
 
-    socket.on("trade", (tradeRequest: TradeRequest) => {
+    socket.on("set-allocation", ({ equityPercent }: SetAllocationRequest) => {
       const { roomCode, playerId } = socket.data;
       if (!roomCode || !playerId) return;
       const room = roomManager.getRoom(roomCode);
@@ -117,12 +117,11 @@ export function registerSocketHandlers(io: Server, roomManager: RoomManager): vo
       const scenario = getScenario(room.scenarioId);
       if (!scenario) return;
 
-      const result = executeTrade(room, scenario, playerId, tradeRequest);
+      const result = setAllocation(room, playerId, equityPercent);
       if (!result.ok) {
-        socket.emit("trade-result", result);
+        socket.emit("allocation-result", result);
         return;
       }
-      socket.emit("trade-result", result);
       io.to(room.code).emit("room-update", buildSnapshot(room, scenario));
     });
 

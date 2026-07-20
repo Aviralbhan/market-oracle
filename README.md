@@ -1,6 +1,6 @@
 # Market Oracle
 
-A real-time multiplayer investment simulation game. Players join a room, race the clock through a historic market scenario (2008 crash, dot-com bubble, COVID crash), and compete to grow a $100,000 starting portfolio the most before the round ends.
+A real-time multiplayer portfolio allocation game. Players join a room, live through a historic market scenario one turning point at a time, and at each one choose how to split their money between Equity and Debt — then see who comes out ahead.
 
 Live demo: [market-oracle-sigma.vercel.app](https://market-oracle-sigma.vercel.app)
 
@@ -8,38 +8,38 @@ Live demo: [market-oracle-sigma.vercel.app](https://market-oracle-sigma.vercel.a
 
 ## Problem / What It Does
 
-Most portfolio "trading game" demos are single-player and trust the client for game state. Market Oracle is built server-authoritative and multiplayer instead:
+Most portfolio simulation demos are single-player and trust the client for game state. Market Oracle is built server-authoritative and multiplayer instead:
 
-- A room's price ticks, timers, and trades are all decided on the server — clients only render what the server sends and request trades, they never compute prices or balances themselves.
+- A room's snapshots, timers, and allocation returns are all decided on the server — clients only render what the server sends and request allocation changes, they never compute returns or balances themselves.
 - Players join a room by 6-character code or by scanning a QR code generated client-side from the room's join URL.
-- If a player's connection drops mid-round (tab closed, phone locked, wifi hiccup), rejoining within a 2-minute grace window restores their exact portfolio, trade history chart, and the live countdown — resynced from the server's clock, not resumed from a stale local timer. This is the core technical problem the project is built around: **timer-drift-safe reconnection** in a real-time multiplayer session.
+- At each snapshot in the scenario (a real historical turning point, e.g. "Sep 2008 — Lehman Brothers Falls"), players have a timed window to set their Equity/Debt split before the next period's return is applied to their portfolio.
+- If a player's connection drops mid-round (tab closed, phone locked, wifi hiccup), rejoining within a 2-minute grace window restores their exact portfolio value, allocation, index chart history, and the live countdown — resynced from the server's clock, not resumed from a stale local timer. This is the core technical problem the project is built around: **timer-drift-safe reconnection** in a real-time multiplayer session.
 
 ## Tech Stack
 
 - **Server**: Node.js, TypeScript, Express, Socket.io — in-memory authoritative game engine, no database (rooms are ephemeral game sessions)
 - **Client**: React, TypeScript, Vite, React Router, Recharts, `qrcode.react`, `socket.io-client`
-- **Data**: Scenario price series are generated programmatically (`server/scripts/generateScenarios.ts`) from publicly documented drawdown/recovery magnitudes for each historical period — not scraped or licensed market data, so the dataset is original.
+- **Data**: Each scenario's snapshots (`server/src/scenarios/data.ts`) are hand-authored around real historical events, with illustrative equity/debt returns shaped after publicly documented drawdown/recovery magnitudes for each period — not scraped or licensed market data, so the dataset is original.
 
 ## Screenshots
 
-_Add screenshots or a short GIF here: Lobby with QR code, live Game screen with chart + trade panel, and the Results leaderboard._
+_Add screenshots or a short GIF here: Lobby with QR code, a live Game screen showing the narrative card + allocation slider + index chart, and the Results leaderboard._
 
 ## Project Structure
 
 ```text
 market-oracle/
 ├── server/
-│   ├── src/
-│   │   ├── index.ts          Express + Socket.io bootstrap
-│   │   ├── rooms.ts          RoomManager: room codes, players, disconnect grace period
-│   │   ├── gameEngine.ts     Authoritative tick loop, trade validation, snapshots
-│   │   ├── socketHandlers.ts Socket event wiring (create/join/rejoin/trade/start)
-│   │   └── scenarios/        Generated scenario JSON + loader
-│   └── scripts/generateScenarios.ts
+│   └── src/
+│       ├── index.ts          Express + Socket.io bootstrap
+│       ├── rooms.ts          RoomManager: room codes, players, disconnect grace period
+│       ├── gameEngine.ts     Authoritative snapshot loop, allocation returns, snapshots
+│       ├── socketHandlers.ts Socket event wiring (create/join/rejoin/set-allocation/start)
+│       └── scenarios/        Hand-authored scenario data + loader
 ├── client/
 │   └── src/
 │       ├── pages/            Home, Lobby, Game, Results
-│       ├── components/       Timer, PriceChart, TradePanel, Leaderboard, QRCodeBlock, ...
+│       ├── components/       Timer, NarrativeCard, AllocationSlider, IndexChart, Leaderboard, QRCodeBlock, ...
 │       └── hooks/useRoom.tsx Socket connection, rejoin-on-connect, room state context
 └── render.yaml
 ```
@@ -53,7 +53,6 @@ Server:
 ```bash
 cd server
 npm install
-npm run gen:scenarios   # only needed if src/scenarios/*.json is missing
 npm run dev
 ```
 
@@ -80,6 +79,7 @@ Deployed as: [market-oracle-sigma.vercel.app](https://market-oracle-sigma.vercel
 
 ## Game Mechanics
 
-- Each room picks one of three scenarios at creation; the server ticks through ~24-28 rounds (a few seconds each) advancing the scenario's price series.
-- Trades are market orders (buy/sell at the current tick's price), validated server-side against real-time cash/holdings — the client UI only disables obviously-invalid trades as a convenience, the server is the actual source of truth.
-- Final ranking is by total portfolio value (cash + holdings at the last tick's prices) when the scenario ends.
+- Each room picks one of three scenarios at creation; each scenario is ~7 real-event snapshots (e.g. "Lehman Brothers Falls", "Vaccine Rally").
+- At every snapshot except the last, players get a timed window (20s) to set their Equity/Debt split via a slider — 100% equity is the most volatile, 100% debt is the steadiest, or anywhere in between.
+- When the window closes, the server applies that period's equity/debt returns to each player's portfolio based on the split they had set, server-side and independent of what the client claims.
+- Final ranking is by total portfolio value when the last snapshot resolves.
