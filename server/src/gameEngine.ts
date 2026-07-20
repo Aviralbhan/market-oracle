@@ -7,6 +7,7 @@ function toPublicPlayer(player: Player): PublicPlayer {
     name: player.name,
     portfolioValue: player.portfolioValue,
     equityPercent: player.equityPercent,
+    hasSubmitted: player.hasSubmitted,
     connected: player.connected,
     isHost: player.isHost,
   };
@@ -56,7 +57,12 @@ export function startGame(io: Server, room: Room, scenario: Scenario): void {
   advanceToSnapshot(io, room, scenario, 0);
 }
 
-function advanceToSnapshot(io: Server, room: Room, scenario: Scenario, index: number): void {
+export function advanceToSnapshot(io: Server, room: Room, scenario: Scenario, index: number): void {
+  if (room.roundTimer) {
+    clearTimeout(room.roundTimer);
+    room.roundTimer = null;
+  }
+
   room.currentSnapshotIndex = index;
   const snapshot = scenario.snapshots[index];
 
@@ -70,6 +76,10 @@ function advanceToSnapshot(io: Server, room: Room, scenario: Scenario, index: nu
     return;
   }
 
+  for (const player of room.players.values()) {
+    player.hasSubmitted = false;
+  }
+
   room.roundEndsAt = Date.now() + room.roundDurationMs;
   broadcastSnapshot(io, room, scenario);
 
@@ -81,10 +91,6 @@ function advanceToSnapshot(io: Server, room: Room, scenario: Scenario, index: nu
 function endGame(io: Server, room: Room, scenario: Scenario): void {
   room.status = "ended";
   room.roundEndsAt = null;
-  if (room.roundTimer) {
-    clearTimeout(room.roundTimer);
-    room.roundTimer = null;
-  }
   broadcastSnapshot(io, room, scenario);
 }
 
@@ -99,13 +105,33 @@ export function setAllocation(room: Room, playerId: string, equityPercent: numbe
   }
   const player = room.players.get(playerId);
   if (!player) return { ok: false, error: "Player not found in room." };
+  if (player.hasSubmitted) {
+    return { ok: false, error: "You've already submitted this round." };
+  }
 
   if (!Number.isFinite(equityPercent)) {
     return { ok: false, error: "Invalid allocation." };
   }
 
-  player.equityPercent = Math.round(Math.max(0, Math.min(100, equityPercent)));
+  player.equityPercent = Math.max(0, Math.min(100, Math.round(equityPercent * 10) / 10));
   return { ok: true };
+}
+
+export function submitAllocation(room: Room, playerId: string): SetAllocationResult {
+  if (room.status !== "running") {
+    return { ok: false, error: "This room isn't in an active round." };
+  }
+  const player = room.players.get(playerId);
+  if (!player) return { ok: false, error: "Player not found in room." };
+
+  player.hasSubmitted = true;
+  return { ok: true };
+}
+
+export function allConnectedPlayersSubmitted(room: Room): boolean {
+  const connectedPlayers = Array.from(room.players.values()).filter((p) => p.connected);
+  if (connectedPlayers.length === 0) return false;
+  return connectedPlayers.every((p) => p.hasSubmitted);
 }
 
 export { broadcastSnapshot };

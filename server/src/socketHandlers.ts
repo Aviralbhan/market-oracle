@@ -1,8 +1,15 @@
 import type { Server, Socket } from "socket.io";
 import { RoomManager } from "./rooms";
-import { getScenario } from "./scenarios";
-import { buildSnapshot, setAllocation, startGame } from "./gameEngine";
-import type { SetAllocationRequest } from "./types";
+import { getScenario, scenarios } from "./scenarios";
+import {
+  advanceToSnapshot,
+  allConnectedPlayersSubmitted,
+  buildSnapshot,
+  setAllocation,
+  startGame,
+  submitAllocation,
+} from "./gameEngine";
+import type { Room, SetAllocationRequest } from "./types";
 
 interface SocketData {
   roomCode?: string;
@@ -13,18 +20,32 @@ function typedSocket(socket: Socket) {
   return socket as Socket & { data: SocketData };
 }
 
+function randomScenarioId(): string {
+  return scenarios[Math.floor(Math.random() * scenarios.length)].id;
+}
+
+/** If everyone connected has locked in, skip the rest of the timer and advance now. */
+function maybeAdvanceEarly(io: Server, room: Room, scenarioId: string): void {
+  const scenario = getScenario(scenarioId);
+  if (!scenario) return;
+  if (room.status !== "running") return;
+  if (!allConnectedPlayersSubmitted(room)) return;
+  advanceToSnapshot(io, room, scenario, room.currentSnapshotIndex + 1);
+}
+
 export function registerSocketHandlers(io: Server, roomManager: RoomManager): void {
   io.on("connection", (rawSocket) => {
     const socket = typedSocket(rawSocket);
 
-    socket.on("create-room", ({ playerName, scenarioId }: { playerName: string; scenarioId: string }) => {
+    socket.on("create-room", ({ playerName }: { playerName: string }) => {
       if (socket.data.roomCode) {
         socket.emit("error-message", "You are already in a room.");
         return;
       }
+      const scenarioId = randomScenarioId();
       const scenario = getScenario(scenarioId);
       if (!scenario) {
-        socket.emit("error-message", "Unknown scenario.");
+        socket.emit("error-message", "No scenarios available.");
         return;
       }
 
@@ -125,6 +146,23 @@ export function registerSocketHandlers(io: Server, roomManager: RoomManager): vo
       io.to(room.code).emit("room-update", buildSnapshot(room, scenario));
     });
 
+    socket.on("submit-allocation", () => {
+      const { roomCode, playerId } = socket.data;
+      if (!roomCode || !playerId) return;
+      const room = roomManager.getRoom(roomCode);
+      if (!room) return;
+      const scenario = getScenario(room.scenarioId);
+      if (!scenario) return;
+
+      const result = submitAllocation(room, playerId);
+      if (!result.ok) {
+        socket.emit("allocation-result", result);
+        return;
+      }
+      io.to(room.code).emit("room-update", buildSnapshot(room, scenario));
+      maybeAdvanceEarly(io, room, room.scenarioId);
+    });
+
     socket.on("leave-room", () => {
       const { roomCode, playerId } = socket.data;
       if (!roomCode || !playerId) return;
@@ -151,6 +189,7 @@ export function registerSocketHandlers(io: Server, roomManager: RoomManager): vo
 
       const scenario = getScenario(room.scenarioId);
       if (scenario) io.to(room.code).emit("room-update", buildSnapshot(room, scenario));
+      maybeAdvanceEarly(io, room, room.scenarioId);
     });
   });
 }

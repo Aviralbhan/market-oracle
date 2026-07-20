@@ -56,6 +56,7 @@ export class RoomManager {
       name: name.slice(0, 24).trim() || "Trader",
       portfolioValue: room.startingCash,
       equityPercent: 50,
+      hasSubmitted: false,
       connected: true,
       disconnectedAt: null,
       isHost,

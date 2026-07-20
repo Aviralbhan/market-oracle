@@ -25,6 +25,8 @@ export interface Player {
   portfolioValue: number;
   /** Current allocation choice, 0-100. Rest is allocated to debt. */
   equityPercent: number;
+  /** Whether this player has locked in their allocation for the current decision round. */
+  hasSubmitted: boolean;
   connected: boolean;
   disconnectedAt: number | null;
   isHost: boolean;
@@ -50,6 +52,7 @@ export interface PublicPlayer {
   name: string;
   portfolioValue: number;
   equityPercent: number;
+  hasSubmitted: boolean;
   connected: boolean;
   isHost: boolean;
 }

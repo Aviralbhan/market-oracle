@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useRoom } from "../hooks/useRoom";
 import { Leaderboard } from "../components/Leaderboard";
+import { ScenarioRecap } from "../components/ScenarioRecap";
 
 export function ResultsPage() {
   const navigate = useNavigate();
@@ -26,7 +27,10 @@ export function ResultsPage() {
           🏆 {winner.name} wins with ${winner.portfolioValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
         </p>
       )}
-      <Leaderboard players={snapshot.players} selfPlayerId={selfPlayerId} />
+      <div className="results-grid">
+        <Leaderboard players={snapshot.players} selfPlayerId={selfPlayerId} />
+        <ScenarioRecap history={snapshot.snapshotHistory} />
+      </div>
       <button
         onClick={() => {
           leaveRoom();

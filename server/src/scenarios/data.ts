@@ -180,6 +180,111 @@ const RAW_SCENARIOS: RawScenario[] = [
       },
     ],
   },
+  {
+    id: "1990s-bull-run",
+    name: "1990s Bull Run",
+    description:
+      "Ride one of the greatest multi-year bull markets in history, from 1995 to the eve of the dot-com peak. Illustrative returns shaped after real events, not sourced market data.",
+    peakToTroughPct: -12,
+    snapshots: [
+      {
+        label: "Jan 1995 — A New Bull Begins",
+        narrative: "Interest rates ease and the economy strengthens. Stocks quietly begin a multi-year climb.",
+        equityReturnPct: 0,
+        debtReturnPct: 0,
+      },
+      {
+        label: "1995 — Steady Gains",
+        narrative: "The market notches its best year in over a decade as investors regain confidence.",
+        equityReturnPct: 18,
+        debtReturnPct: 3,
+      },
+      {
+        label: "1996 — Exuberance Builds",
+        narrative:
+          "The Fed chair warns of \"irrational exuberance\" in markets, but investors shrug it off and keep buying.",
+        equityReturnPct: 15,
+        debtReturnPct: 2.5,
+      },
+      {
+        label: "Oct 1997 — Asian Contagion",
+        narrative: "A currency crisis sweeps across Asia, causing a sharp but brief global selloff.",
+        equityReturnPct: -12,
+        debtReturnPct: 2,
+      },
+      {
+        label: "1998 — Recovery and Records",
+        narrative: "Markets recover quickly and push on to fresh all-time highs.",
+        equityReturnPct: 22,
+        debtReturnPct: 2,
+      },
+      {
+        label: "1999 — Dot-com Euphoria",
+        narrative: "Internet stocks soar as investors chase the next big thing. The bull market shows no signs of slowing.",
+        equityReturnPct: 19,
+        debtReturnPct: 1.5,
+      },
+      {
+        label: "Dec 1999 — A Historic Run",
+        narrative:
+          "Five years on, this bull market has delivered one of the greatest wealth-building runs in market history.",
+        equityReturnPct: 8,
+        debtReturnPct: 1.5,
+      },
+    ],
+  },
+  {
+    id: "2013-everything-rally",
+    name: "2013 Everything Rally",
+    description:
+      "Ride the post-financial-crisis recovery boom of 2012-2013, when nearly every asset class climbed together. Illustrative returns shaped after real events, not sourced market data.",
+    peakToTroughPct: -7,
+    snapshots: [
+      {
+        label: "Jan 2012 — Cautious Optimism",
+        narrative: "The worst of the financial crisis is behind us. Investors slowly wade back into stocks.",
+        equityReturnPct: 0,
+        debtReturnPct: 0,
+      },
+      {
+        label: "2012 — Stimulus Fuels a Rally",
+        narrative:
+          "Central bank bond-buying pushes investors toward riskier assets. Markets grind steadily higher.",
+        equityReturnPct: 13,
+        debtReturnPct: 2,
+      },
+      {
+        label: "Jan 2013 — Fiscal Cliff Averted",
+        narrative: "A last-minute budget deal removes a major overhang, and stocks rally on the relief.",
+        equityReturnPct: 6,
+        debtReturnPct: 1,
+      },
+      {
+        label: "2013 — Record Highs",
+        narrative: "Major indices repeatedly close at all-time highs as corporate earnings beat expectations.",
+        equityReturnPct: 20,
+        debtReturnPct: 0.5,
+      },
+      {
+        label: "Jun 2013 — Taper Tantrum",
+        narrative: "The Fed signals it may slow bond-buying. Bond yields spike and markets wobble.",
+        equityReturnPct: -5,
+        debtReturnPct: -2,
+      },
+      {
+        label: "Late 2013 — Confidence Returns",
+        narrative: "Markets shake off the taper scare as economic data continues to improve.",
+        equityReturnPct: 12,
+        debtReturnPct: 1.5,
+      },
+      {
+        label: "Dec 2013 — Best Year in Over a Decade",
+        narrative: "The index closes out its strongest year since the late 1990s.",
+        equityReturnPct: 9,
+        debtReturnPct: 1,
+      },
+    ],
+  },
 ];
 
 function buildScenario(raw: RawScenario): Scenario {

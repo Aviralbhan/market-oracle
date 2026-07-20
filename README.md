@@ -79,7 +79,8 @@ Deployed as: [market-oracle-sigma.vercel.app](https://market-oracle-sigma.vercel
 
 ## Game Mechanics
 
-- Each room picks one of three scenarios at creation; each scenario is ~7 real-event snapshots (e.g. "Lehman Brothers Falls", "Vaccine Rally").
-- At every snapshot except the last, players get a timed window (20s) to set their Equity/Debt split via a slider — 100% equity is the most volatile, 100% debt is the steadiest, or anywhere in between.
-- When the window closes, the server applies that period's equity/debt returns to each player's portfolio based on the split they had set, server-side and independent of what the client claims.
-- Final ranking is by total portfolio value when the last snapshot resolves.
+- The scenario is a surprise: the server picks one at random from a 5-scenario deck when a room is created — 3 crashes (2008, dot-com, COVID) and 2 bull runs (1990s, the 2013 "everything rally") — each ~7 real-event snapshots (e.g. "Lehman Brothers Falls", "Vaccine Rally").
+- At every snapshot except the last, players get a timed window (20s) to freely drag their Equity/Debt split — 100% equity is the most volatile, 100% debt is the steadiest, or anywhere in between — and submit to lock it in.
+- Once every connected player has submitted, the round advances immediately instead of waiting out the rest of the timer.
+- When the window closes (by submission or timeout), the server applies that period's equity/debt returns to each player's portfolio based on the split they had locked in, server-side and independent of what the client claims.
+- Final ranking is by total portfolio value when the last snapshot resolves; the Results screen also recaps every snapshot's date, event, and return.

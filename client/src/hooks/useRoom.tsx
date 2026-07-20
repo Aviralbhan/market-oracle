@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { socket, saveSession, loadSession, clearSession } from "../lib/socket";
-import type { RoomSnapshot, ScenarioSummary, SetAllocationResult } from "../types";
+import type { RoomSnapshot, SetAllocationResult } from "../types";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:4000";
 
@@ -9,11 +9,11 @@ interface RoomContextValue {
   snapshot: RoomSnapshot | null;
   selfPlayerId: string | null;
   errorMessage: string | null;
-  scenarios: ScenarioSummary[];
-  createRoom: (playerName: string, scenarioId: string) => void;
+  createRoom: (playerName: string) => void;
   joinRoom: (roomCode: string, playerName: string) => void;
   startGame: () => void;
   setAllocation: (equityPercent: number) => void;
+  submitAllocation: () => void;
   leaveRoom: () => void;
   clearError: () => void;
 }
@@ -25,13 +25,11 @@ export function RoomProvider({ children }: { children: ReactNode }) {
   const [snapshot, setSnapshot] = useState<RoomSnapshot | null>(null);
   const [selfPlayerId, setSelfPlayerId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [scenarios, setScenarios] = useState<ScenarioSummary[]>([]);
 
   useEffect(() => {
-    fetch(`${SERVER_URL}/api/scenarios`)
-      .then((res) => res.json())
-      .then(setScenarios)
-      .catch(() => setErrorMessage("Could not reach the game server. Is it running?"));
+    fetch(`${SERVER_URL}/health`).catch(() =>
+      setErrorMessage("Could not reach the game server. Is it running?")
+    );
   }, []);
 
   useEffect(() => {
@@ -97,8 +95,8 @@ export function RoomProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const createRoom = useCallback((playerName: string, scenarioId: string) => {
-    socket.emit("create-room", { playerName, scenarioId });
+  const createRoom = useCallback((playerName: string) => {
+    socket.emit("create-room", { playerName });
   }, []);
 
   const joinRoom = useCallback((roomCode: string, playerName: string) => {
@@ -111,6 +109,10 @@ export function RoomProvider({ children }: { children: ReactNode }) {
 
   const setAllocation = useCallback((equityPercent: number) => {
     socket.emit("set-allocation", { equityPercent });
+  }, []);
+
+  const submitAllocation = useCallback(() => {
+    socket.emit("submit-allocation");
   }, []);
 
   const leaveRoom = useCallback(() => {
@@ -128,15 +130,15 @@ export function RoomProvider({ children }: { children: ReactNode }) {
       snapshot,
       selfPlayerId,
       errorMessage,
-      scenarios,
       createRoom,
       joinRoom,
       startGame,
       setAllocation,
+      submitAllocation,
       leaveRoom,
       clearError,
     }),
-    [connected, snapshot, selfPlayerId, errorMessage, scenarios, createRoom, joinRoom, startGame, setAllocation, leaveRoom, clearError]
+    [connected, snapshot, selfPlayerId, errorMessage, createRoom, joinRoom, startGame, setAllocation, submitAllocation, leaveRoom, clearError]
   );
 
   return <RoomContext.Provider value={value}>{children}</RoomContext.Provider>;

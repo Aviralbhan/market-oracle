@@ -10,7 +10,7 @@ import { Leaderboard } from "../components/Leaderboard";
 
 export function GamePage() {
   const navigate = useNavigate();
-  const { snapshot, selfPlayerId, setAllocation, connected } = useRoom();
+  const { snapshot, selfPlayerId, setAllocation, submitAllocation, connected } = useRoom();
 
   useEffect(() => {
     if (!connected) return;
@@ -31,6 +31,8 @@ export function GamePage() {
   }
 
   const self = snapshot.players.find((p) => p.id === selfPlayerId);
+  const connectedPlayers = snapshot.players.filter((p) => p.connected);
+  const submittedCount = connectedPlayers.filter((p) => p.hasSubmitted).length;
 
   return (
     <div className="page game-page">
@@ -51,14 +53,18 @@ export function GamePage() {
           {self && (
             <AllocationSlider
               equityPercent={self.equityPercent}
-              disabled={!snapshot.isDecisionRound}
+              isDecisionRound={snapshot.isDecisionRound}
+              hasSubmitted={self.hasSubmitted}
+              submittedCount={submittedCount}
+              totalCount={connectedPlayers.length}
               onChange={setAllocation}
+              onSubmit={submitAllocation}
             />
           )}
         </div>
         <div className="game-side">
           {self && <PortfolioSummary portfolioValue={self.portfolioValue} />}
-          <Leaderboard players={snapshot.players} selfPlayerId={selfPlayerId} />
+          <Leaderboard players={snapshot.players} selfPlayerId={selfPlayerId} showSubmitted />
         </div>
       </div>
     </div>

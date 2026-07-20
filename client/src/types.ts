@@ -8,13 +8,6 @@ export interface ScenarioSnapshot {
   debtIndex: number;
 }
 
-export interface ScenarioSummary {
-  id: string;
-  name: string;
-  description: string;
-  peakToTroughPct: number;
-}
-
 export type RoomStatus = "lobby" | "running" | "ended";
 
 export interface PublicPlayer {
@@ -22,6 +15,7 @@ export interface PublicPlayer {
   name: string;
   portfolioValue: number;
   equityPercent: number;
+  hasSubmitted: boolean;
   connected: boolean;
   isHost: boolean;
 }

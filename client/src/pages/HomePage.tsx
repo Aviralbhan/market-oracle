@@ -5,17 +5,11 @@ import { useRoom } from "../hooks/useRoom";
 export function HomePage() {
   const { roomCode: roomCodeFromUrl } = useParams();
   const navigate = useNavigate();
-  const { snapshot, scenarios, createRoom, joinRoom, errorMessage, clearError, connected } = useRoom();
+  const { snapshot, createRoom, joinRoom, errorMessage, clearError, connected } = useRoom();
 
   const [createName, setCreateName] = useState("");
-  const [scenarioId, setScenarioId] = useState("");
-
   const [joinName, setJoinName] = useState("");
   const [joinCode, setJoinCode] = useState(roomCodeFromUrl?.toUpperCase() ?? "");
-
-  useEffect(() => {
-    if (scenarios.length > 0 && !scenarioId) setScenarioId(scenarios[0].id);
-  }, [scenarios, scenarioId]);
 
   useEffect(() => {
     if (roomCodeFromUrl) setJoinCode(roomCodeFromUrl.toUpperCase());
@@ -30,8 +24,14 @@ export function HomePage() {
 
   return (
     <div className="page home-page">
-      <h1>Market Oracle</h1>
-      <p className="tagline">A real-time multiplayer portfolio simulation. Split your money between Equity and Debt at each turning point of a historic market scenario and see who comes out ahead.</p>
+      <div className="hero">
+        <span className="hero-eyebrow">Multiplayer · Real-time · Historical markets</span>
+        <h1>Market Oracle</h1>
+        <p className="tagline">
+          Every room draws a surprise scenario — a real market crash or bull run. At each turning point, split your
+          money between Equity and Debt and see who reads the moment best.
+        </p>
+      </div>
       {!connected && <p className="status-warning">Connecting to server…</p>}
       {errorMessage && (
         <p className="error-banner" onClick={clearError}>
@@ -46,23 +46,10 @@ export function HomePage() {
             Your name
             <input value={createName} onChange={(e) => setCreateName(e.target.value)} maxLength={24} placeholder="e.g. Aviral" />
           </label>
-          <label>
-            Scenario
-            <select value={scenarioId} onChange={(e) => setScenarioId(e.target.value)}>
-              {scenarios.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name} ({s.peakToTroughPct}%)
-                </option>
-              ))}
-            </select>
-          </label>
-          {scenarioId && (
-            <p className="scenario-desc">{scenarios.find((s) => s.id === scenarioId)?.description}</p>
-          )}
-          <button
-            disabled={!createName.trim() || !scenarioId}
-            onClick={() => createRoom(createName.trim(), scenarioId)}
-          >
+          <p className="scenario-desc">
+            The scenario is a surprise — picked at random from the deck when you create the room.
+          </p>
+          <button disabled={!createName.trim()} onClick={() => createRoom(createName.trim())}>
             Create Room
           </button>
         </div>
