@@ -2,7 +2,9 @@
 
 A real-time multiplayer investment simulation game. Players join a room, race the clock through a historic market scenario (2008 crash, dot-com bubble, COVID crash), and compete to grow a $100,000 starting portfolio the most before the round ends.
 
-Live demo: _add your deployed URL here after deploying_
+Live demo: [market-oracle-sigma.vercel.app](https://market-oracle-sigma.vercel.app)
+
+> Note: the backend runs on Render's free tier and spins down after 15 minutes of inactivity — the first request after a period of idle time can take ~50s to wake it back up.
 
 ## Problem / What It Does
 
@@ -70,9 +72,11 @@ Open the client URL in two browser tabs/devices to play as two players — host 
 
 ## Deploying
 
-**Server → Render**: connect this repo, Render will pick up `render.yaml` (`rootDir: server`). Set the `CLIENT_ORIGIN` env var to your deployed client URL (comma-separate multiple origins if needed) once you know it.
+Deployed as: [market-oracle-sigma.vercel.app](https://market-oracle-sigma.vercel.app) (client) → `https://market-oracle-pof8.onrender.com` (server).
 
-**Client → Vercel**: import the repo, set the project root to `client/`, and set env var `VITE_SERVER_URL` to your deployed Render backend URL. Redeploy the server afterward with `CLIENT_ORIGIN` pointing at the final Vercel URL so CORS allows it.
+**Server → Render**: use Render's plain **New Web Service** flow (not **Blueprint** — Blueprints can prompt for a card even for a free-tier service). Root Directory `server`, Language `Node`, Build Command `npm install && npm run build`, Start Command `npm start`, Instance Type `Free`. Set the `CLIENT_ORIGIN` env var to your deployed client URL (comma-separate multiple origins if needed).
+
+**Client → Vercel**: `vercel link` the `client/` directory, set env var `VITE_SERVER_URL` to your deployed Render backend URL (`vercel env add VITE_SERVER_URL production`), then `vercel --prod`. Redeploy the server afterward with `CLIENT_ORIGIN` pointing at the final Vercel URL so CORS allows it.
 
 ## Game Mechanics
 
