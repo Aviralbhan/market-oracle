@@ -1,0 +1,286 @@
+{
+  "id": "2008-financial-crisis",
+  "name": "2008 Financial Crisis",
+  "description": "A market path shaped after the 2007-2009 financial crisis: a slow top, a sharp collapse, a grinding bottom, then the first signs of recovery. Illustrative simulation, not sourced market data.",
+  "peakToTroughPct": -57,
+  "assets": [
+    {
+      "symbol": "OMX",
+      "name": "Oracle Market Index"
+    },
+    {
+      "symbol": "NVTK",
+      "name": "Nova Tech Corp"
+    },
+    {
+      "symbol": "CNBK",
+      "name": "Continental Bank"
+    },
+    {
+      "symbol": "GLDH",
+      "name": "Golden Hedge Fund"
+    }
+  ],
+  "ticks": [
+    {
+      "day": 0,
+      "label": "Start",
+      "prices": {
+        "OMX": 1389.22,
+        "NVTK": 85.38,
+        "CNBK": 51.68,
+        "GLDH": 119.16
+      }
+    },
+    {
+      "day": 1,
+      "label": "Week 1",
+      "prices": {
+        "OMX": 1393.61,
+        "NVTK": 85.65,
+        "CNBK": 52.15,
+        "GLDH": 119.55
+      }
+    },
+    {
+      "day": 2,
+      "label": "Week 2",
+      "prices": {
+        "OMX": 1417.74,
+        "NVTK": 87.68,
+        "CNBK": 54.2,
+        "GLDH": 118.74
+      }
+    },
+    {
+      "day": 3,
+      "label": "Week 3",
+      "prices": {
+        "OMX": 1459.7,
+        "NVTK": 88.93,
+        "CNBK": 55.96,
+        "GLDH": 117.61
+      }
+    },
+    {
+      "day": 4,
+      "label": "Week 4",
+      "prices": {
+        "OMX": 1463.9,
+        "NVTK": 90.48,
+        "CNBK": 56.19,
+        "GLDH": 116.94
+      }
+    },
+    {
+      "day": 5,
+      "label": "Week 5",
+      "prices": {
+        "OMX": 1443.34,
+        "NVTK": 87.26,
+        "CNBK": 53.85,
+        "GLDH": 118.48
+      }
+    },
+    {
+      "day": 6,
+      "label": "Week 6",
+      "prices": {
+        "OMX": 1374.77,
+        "NVTK": 80.81,
+        "CNBK": 48.76,
+        "GLDH": 121.17
+      }
+    },
+    {
+      "day": 7,
+      "label": "Week 7",
+      "prices": {
+        "OMX": 1272.33,
+        "NVTK": 73.45,
+        "CNBK": 42.33,
+        "GLDH": 124.6
+      }
+    },
+    {
+      "day": 8,
+      "label": "Week 8",
+      "prices": {
+        "OMX": 1175.32,
+        "NVTK": 66.31,
+        "CNBK": 35.53,
+        "GLDH": 127.96
+      }
+    },
+    {
+      "day": 9,
+      "label": "Week 9",
+      "prices": {
+        "OMX": 1097.4,
+        "NVTK": 60.22,
+        "CNBK": 30.31,
+        "GLDH": 129.41
+      }
+    },
+    {
+      "day": 10,
+      "label": "Week 10",
+      "prices": {
+        "OMX": 1052.11,
+        "NVTK": 57.82,
+        "CNBK": 28.33,
+        "GLDH": 129.65
+      }
+    },
+    {
+      "day": 11,
+      "label": "Week 11",
+      "prices": {
+        "OMX": 1023.73,
+        "NVTK": 55.85,
+        "CNBK": 27.13,
+        "GLDH": 130.37
+      }
+    },
+    {
+      "day": 12,
+      "label": "Week 12",
+      "prices": {
+        "OMX": 979.54,
+        "NVTK": 51.98,
+        "CNBK": 23.32,
+        "GLDH": 130.82
+      }
+    },
+    {
+      "day": 13,
+      "label": "Week 13",
+      "prices": {
+        "OMX": 914.49,
+        "NVTK": 46.73,
+        "CNBK": 18.48,
+        "GLDH": 131.99
+      }
+    },
+    {
+      "day": 14,
+      "label": "Week 14",
+      "prices": {
+        "OMX": 836.15,
+        "NVTK": 40.16,
+        "CNBK": 12.73,
+        "GLDH": 135.61
+      }
+    },
+    {
+      "day": 15,
+      "label": "Week 15",
+      "prices": {
+        "OMX": 750.4,
+        "NVTK": 33.74,
+        "CNBK": 7.02,
+        "GLDH": 137.42
+      }
+    },
+    {
+      "day": 16,
+      "label": "Week 16",
+      "prices": {
+        "OMX": 670.08,
+        "NVTK": 28.01,
+        "CNBK": 2.6,
+        "GLDH": 138.17
+      }
+    },
+    {
+      "day": 17,
+      "label": "Week 17",
+      "prices": {
+        "OMX": 620.26,
+        "NVTK": 23.66,
+        "CNBK": 2.6,
+        "GLDH": 140.37
+      }
+    },
+    {
+      "day": 18,
+      "label": "Week 18",
+      "prices": {
+        "OMX": 600.51,
+        "NVTK": 22.18,
+        "CNBK": 2.6,
+        "GLDH": 141.62
+      }
+    },
+    {
+      "day": 19,
+      "label": "Week 19",
+      "prices": {
+        "OMX": 618.8,
+        "NVTK": 23.37,
+        "CNBK": 2.6,
+        "GLDH": 140.78
+      }
+    },
+    {
+      "day": 20,
+      "label": "Week 20",
+      "prices": {
+        "OMX": 649.9,
+        "NVTK": 26.07,
+        "CNBK": 2.6,
+        "GLDH": 138.57
+      }
+    },
+    {
+      "day": 21,
+      "label": "Week 21",
+      "prices": {
+        "OMX": 689.81,
+        "NVTK": 28.53,
+        "CNBK": 2.88,
+        "GLDH": 138.19
+      }
+    },
+    {
+      "day": 22,
+      "label": "Week 22",
+      "prices": {
+        "OMX": 705.69,
+        "NVTK": 29.93,
+        "CNBK": 3.96,
+        "GLDH": 137.85
+      }
+    },
+    {
+      "day": 23,
+      "label": "Week 23",
+      "prices": {
+        "OMX": 728.42,
+        "NVTK": 32.08,
+        "CNBK": 5.94,
+        "GLDH": 136.36
+      }
+    },
+    {
+      "day": 24,
+      "label": "Week 24",
+      "prices": {
+        "OMX": 786.71,
+        "NVTK": 36.57,
+        "CNBK": 9.56,
+        "GLDH": 134.66
+      }
+    },
+    {
+      "day": 25,
+      "label": "Week 25",
+      "prices": {
+        "OMX": 818.06,
+        "NVTK": 38.81,
+        "CNBK": 11.5,
+        "GLDH": 134.71
+      }
+    }
+  ]
+}

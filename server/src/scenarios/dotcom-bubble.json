@@ -1,0 +1,306 @@
+{
+  "id": "dotcom-bubble",
+  "name": "Dot-com Bubble Crash",
+  "description": "A market path shaped after the 2000-2002 dot-com crash: a final euphoric run-up followed by a long, steep decline. Illustrative simulation, not sourced market data.",
+  "peakToTroughPct": -78,
+  "assets": [
+    {
+      "symbol": "OMX",
+      "name": "Oracle Market Index"
+    },
+    {
+      "symbol": "CLKV",
+      "name": "ClickVerse Inc"
+    },
+    {
+      "symbol": "NVTK",
+      "name": "Nova Tech Corp"
+    },
+    {
+      "symbol": "STBD",
+      "name": "Steady Bond Trust"
+    }
+  ],
+  "ticks": [
+    {
+      "day": 0,
+      "label": "Start",
+      "prices": {
+        "OMX": 2117.37,
+        "CLKV": 64.14,
+        "NVTK": 39.59,
+        "STBD": 98.89
+      }
+    },
+    {
+      "day": 1,
+      "label": "Month 1",
+      "prices": {
+        "OMX": 2172.12,
+        "CLKV": 69.56,
+        "NVTK": 41.96,
+        "STBD": 99.65
+      }
+    },
+    {
+      "day": 2,
+      "label": "Month 2",
+      "prices": {
+        "OMX": 2316.39,
+        "CLKV": 79.26,
+        "NVTK": 46.4,
+        "STBD": 99.48
+      }
+    },
+    {
+      "day": 3,
+      "label": "Month 3",
+      "prices": {
+        "OMX": 2418.42,
+        "CLKV": 84.89,
+        "NVTK": 48.21,
+        "STBD": 98.83
+      }
+    },
+    {
+      "day": 4,
+      "label": "Month 4",
+      "prices": {
+        "OMX": 2378.02,
+        "CLKV": 82.57,
+        "NVTK": 47.06,
+        "STBD": 98.02
+      }
+    },
+    {
+      "day": 5,
+      "label": "Month 5",
+      "prices": {
+        "OMX": 2283.94,
+        "CLKV": 74.6,
+        "NVTK": 43.78,
+        "STBD": 99.49
+      }
+    },
+    {
+      "day": 6,
+      "label": "Month 6",
+      "prices": {
+        "OMX": 2122.04,
+        "CLKV": 64.1,
+        "NVTK": 39.65,
+        "STBD": 99.28
+      }
+    },
+    {
+      "day": 7,
+      "label": "Month 7",
+      "prices": {
+        "OMX": 1931.49,
+        "CLKV": 50.63,
+        "NVTK": 33.68,
+        "STBD": 100.25
+      }
+    },
+    {
+      "day": 8,
+      "label": "Month 8",
+      "prices": {
+        "OMX": 1702.95,
+        "CLKV": 37.43,
+        "NVTK": 27.52,
+        "STBD": 102.48
+      }
+    },
+    {
+      "day": 9,
+      "label": "Month 9",
+      "prices": {
+        "OMX": 1509.72,
+        "CLKV": 24.29,
+        "NVTK": 21.97,
+        "STBD": 104.04
+      }
+    },
+    {
+      "day": 10,
+      "label": "Month 10",
+      "prices": {
+        "OMX": 1328.21,
+        "CLKV": 13.81,
+        "NVTK": 17.18,
+        "STBD": 105.34
+      }
+    },
+    {
+      "day": 11,
+      "label": "Month 11",
+      "prices": {
+        "OMX": 1215.26,
+        "CLKV": 6.29,
+        "NVTK": 14.08,
+        "STBD": 107
+      }
+    },
+    {
+      "day": 12,
+      "label": "Month 12",
+      "prices": {
+        "OMX": 1169.26,
+        "CLKV": 3.51,
+        "NVTK": 13.01,
+        "STBD": 107.22
+      }
+    },
+    {
+      "day": 13,
+      "label": "Month 13",
+      "prices": {
+        "OMX": 1147.92,
+        "CLKV": 3.2,
+        "NVTK": 12.3,
+        "STBD": 107.13
+      }
+    },
+    {
+      "day": 14,
+      "label": "Month 14",
+      "prices": {
+        "OMX": 1093.87,
+        "CLKV": 3.2,
+        "NVTK": 10.78,
+        "STBD": 107.67
+      }
+    },
+    {
+      "day": 15,
+      "label": "Month 15",
+      "prices": {
+        "OMX": 1021.4,
+        "CLKV": 3.2,
+        "NVTK": 8.58,
+        "STBD": 108.76
+      }
+    },
+    {
+      "day": 16,
+      "label": "Month 16",
+      "prices": {
+        "OMX": 918.42,
+        "CLKV": 3.2,
+        "NVTK": 5.99,
+        "STBD": 109.44
+      }
+    },
+    {
+      "day": 17,
+      "label": "Month 17",
+      "prices": {
+        "OMX": 810.36,
+        "CLKV": 3.2,
+        "NVTK": 3.05,
+        "STBD": 110.76
+      }
+    },
+    {
+      "day": 18,
+      "label": "Month 18",
+      "prices": {
+        "OMX": 710.45,
+        "CLKV": 3.2,
+        "NVTK": 2,
+        "STBD": 112.22
+      }
+    },
+    {
+      "day": 19,
+      "label": "Month 19",
+      "prices": {
+        "OMX": 610.06,
+        "CLKV": 3.2,
+        "NVTK": 2,
+        "STBD": 111.14
+      }
+    },
+    {
+      "day": 20,
+      "label": "Month 20",
+      "prices": {
+        "OMX": 535.61,
+        "CLKV": 3.2,
+        "NVTK": 2,
+        "STBD": 110.96
+      }
+    },
+    {
+      "day": 21,
+      "label": "Month 21",
+      "prices": {
+        "OMX": 480.05,
+        "CLKV": 3.2,
+        "NVTK": 2,
+        "STBD": 112.74
+      }
+    },
+    {
+      "day": 22,
+      "label": "Month 22",
+      "prices": {
+        "OMX": 457.22,
+        "CLKV": 3.2,
+        "NVTK": 2,
+        "STBD": 113.05
+      }
+    },
+    {
+      "day": 23,
+      "label": "Month 23",
+      "prices": {
+        "OMX": 472.74,
+        "CLKV": 3.2,
+        "NVTK": 2,
+        "STBD": 113.3
+      }
+    },
+    {
+      "day": 24,
+      "label": "Month 24",
+      "prices": {
+        "OMX": 490.2,
+        "CLKV": 3.2,
+        "NVTK": 2,
+        "STBD": 114.04
+      }
+    },
+    {
+      "day": 25,
+      "label": "Month 25",
+      "prices": {
+        "OMX": 517.29,
+        "CLKV": 3.2,
+        "NVTK": 2,
+        "STBD": 113.54
+      }
+    },
+    {
+      "day": 26,
+      "label": "Month 26",
+      "prices": {
+        "OMX": 532.91,
+        "CLKV": 3.2,
+        "NVTK": 2,
+        "STBD": 112.7
+      }
+    },
+    {
+      "day": 27,
+      "label": "Month 27",
+      "prices": {
+        "OMX": 537.76,
+        "CLKV": 3.2,
+        "NVTK": 2,
+        "STBD": 112.82
+      }
+    }
+  ]
+}

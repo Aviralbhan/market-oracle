@@ -1,0 +1,266 @@
+{
+  "id": "covid-crash",
+  "name": "COVID-19 Crash & Recovery",
+  "description": "A market path shaped after the Feb-Aug 2020 COVID crash: a fast ~34% drop over a few weeks followed by a sharp V-shaped recovery. Illustrative simulation, not sourced market data.",
+  "peakToTroughPct": -34,
+  "assets": [
+    {
+      "symbol": "OMX",
+      "name": "Oracle Market Index"
+    },
+    {
+      "symbol": "SKYF",
+      "name": "SkyFleet Airlines"
+    },
+    {
+      "symbol": "CLKV",
+      "name": "ClickVerse Inc"
+    },
+    {
+      "symbol": "GLDH",
+      "name": "Golden Hedge Fund"
+    }
+  ],
+  "ticks": [
+    {
+      "day": 0,
+      "label": "Start",
+      "prices": {
+        "OMX": 3199.32,
+        "SKYF": 44.84,
+        "CLKV": 210.78,
+        "GLDH": 136.01
+      }
+    },
+    {
+      "day": 1,
+      "label": "Week 1",
+      "prices": {
+        "OMX": 3226.36,
+        "SKYF": 46.22,
+        "CLKV": 213.27,
+        "GLDH": 134.17
+      }
+    },
+    {
+      "day": 2,
+      "label": "Week 2",
+      "prices": {
+        "OMX": 3288.55,
+        "SKYF": 46.82,
+        "CLKV": 214.91,
+        "GLDH": 133.79
+      }
+    },
+    {
+      "day": 3,
+      "label": "Week 3",
+      "prices": {
+        "OMX": 3116.61,
+        "SKYF": 41.36,
+        "CLKV": 194.97,
+        "GLDH": 136.41
+      }
+    },
+    {
+      "day": 4,
+      "label": "Week 4",
+      "prices": {
+        "OMX": 2701.16,
+        "SKYF": 28.92,
+        "CLKV": 155.63,
+        "GLDH": 139.17
+      }
+    },
+    {
+      "day": 5,
+      "label": "Week 5",
+      "prices": {
+        "OMX": 2314.55,
+        "SKYF": 16.74,
+        "CLKV": 114.68,
+        "GLDH": 141.46
+      }
+    },
+    {
+      "day": 6,
+      "label": "Week 6",
+      "prices": {
+        "OMX": 2108.77,
+        "SKYF": 11.34,
+        "CLKV": 95.54,
+        "GLDH": 144.13
+      }
+    },
+    {
+      "day": 7,
+      "label": "Week 7",
+      "prices": {
+        "OMX": 2157.88,
+        "SKYF": 12.38,
+        "CLKV": 99.12,
+        "GLDH": 145.26
+      }
+    },
+    {
+      "day": 8,
+      "label": "Week 8",
+      "prices": {
+        "OMX": 2229.11,
+        "SKYF": 14.44,
+        "CLKV": 105.29,
+        "GLDH": 143.94
+      }
+    },
+    {
+      "day": 9,
+      "label": "Week 9",
+      "prices": {
+        "OMX": 2272.62,
+        "SKYF": 16.6,
+        "CLKV": 112.67,
+        "GLDH": 143.1
+      }
+    },
+    {
+      "day": 10,
+      "label": "Week 10",
+      "prices": {
+        "OMX": 2287.7,
+        "SKYF": 17.42,
+        "CLKV": 116.23,
+        "GLDH": 142.55
+      }
+    },
+    {
+      "day": 11,
+      "label": "Week 11",
+      "prices": {
+        "OMX": 2326.16,
+        "SKYF": 18.99,
+        "CLKV": 122,
+        "GLDH": 141.41
+      }
+    },
+    {
+      "day": 12,
+      "label": "Week 12",
+      "prices": {
+        "OMX": 2437.82,
+        "SKYF": 22.54,
+        "CLKV": 132.91,
+        "GLDH": 141.38
+      }
+    },
+    {
+      "day": 13,
+      "label": "Week 13",
+      "prices": {
+        "OMX": 2582.53,
+        "SKYF": 27.4,
+        "CLKV": 148.59,
+        "GLDH": 141.14
+      }
+    },
+    {
+      "day": 14,
+      "label": "Week 14",
+      "prices": {
+        "OMX": 2756.8,
+        "SKYF": 32.39,
+        "CLKV": 165.45,
+        "GLDH": 138.63
+      }
+    },
+    {
+      "day": 15,
+      "label": "Week 15",
+      "prices": {
+        "OMX": 2903.54,
+        "SKYF": 36.17,
+        "CLKV": 178.66,
+        "GLDH": 136.31
+      }
+    },
+    {
+      "day": 16,
+      "label": "Week 16",
+      "prices": {
+        "OMX": 2934.47,
+        "SKYF": 37.41,
+        "CLKV": 183.45,
+        "GLDH": 135.45
+      }
+    },
+    {
+      "day": 17,
+      "label": "Week 17",
+      "prices": {
+        "OMX": 2947.02,
+        "SKYF": 38.07,
+        "CLKV": 184.67,
+        "GLDH": 136.76
+      }
+    },
+    {
+      "day": 18,
+      "label": "Week 18",
+      "prices": {
+        "OMX": 3028.77,
+        "SKYF": 39.61,
+        "CLKV": 191.14,
+        "GLDH": 135.32
+      }
+    },
+    {
+      "day": 19,
+      "label": "Week 19",
+      "prices": {
+        "OMX": 3092.56,
+        "SKYF": 42.19,
+        "CLKV": 202.67,
+        "GLDH": 134.17
+      }
+    },
+    {
+      "day": 20,
+      "label": "Week 20",
+      "prices": {
+        "OMX": 3210.11,
+        "SKYF": 45.42,
+        "CLKV": 211.29,
+        "GLDH": 134.09
+      }
+    },
+    {
+      "day": 21,
+      "label": "Week 21",
+      "prices": {
+        "OMX": 3269.71,
+        "SKYF": 47.75,
+        "CLKV": 222.65,
+        "GLDH": 134.76
+      }
+    },
+    {
+      "day": 22,
+      "label": "Week 22",
+      "prices": {
+        "OMX": 3310.65,
+        "SKYF": 50.14,
+        "CLKV": 227.15,
+        "GLDH": 133.17
+      }
+    },
+    {
+      "day": 23,
+      "label": "Week 23",
+      "prices": {
+        "OMX": 3379.96,
+        "SKYF": 50.52,
+        "CLKV": 227.81,
+        "GLDH": 132.22
+      }
+    }
+  ]
+}
